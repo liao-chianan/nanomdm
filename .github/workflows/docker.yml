@@ -1,9 +1,9 @@
-name: Build and Push Docker Image
+name: Build Official NanoMDM to My GHCR
 
 on:
-  push:
-    branches: [ "main", "master" ]
-  workflow_dispatch:
+  workflow_dispatch: # 提供網頁手動按鈕觸發
+  schedule:
+    - cron: '0 0 * * 0' # (可選) 每週日自動抓取官方最新版編譯
 
 jobs:
   build:
@@ -13,8 +13,12 @@ jobs:
       packages: write
 
     steps:
-      - name: Checkout code
+      # 關鍵：直接指定拉取官方 micromdm 的原始碼
+      - name: Checkout official repository
         uses: actions/checkout@v4
+        with:
+          repository: 'micromdm/nanomdm'
+          ref: 'main' # 拉取官方 main 分支
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
